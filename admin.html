@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel ADMIN - Importadora</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; display:flex; min-height:100vh; background:#f4f6f9; }
+
+    /* MENÚ LATERAL */
+    nav {
+      width:220px;
+      background:#2563eb;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      transition: transform 0.3s ease;
+    }
+
+    nav h2 { text-align:center; padding:20px 0; border-bottom:1px solid rgba(255,255,255,0.3); font-size:20px; }
+
+    nav ul { list-style:none; flex:1; }
+    nav li { padding:15px 20px; cursor:pointer; transition: background 0.2s; }
+    nav li:hover { background:#1e40af; }
+    nav li.active { background:#1e40af; font-weight:bold; }
+
+    /* BOTÓN HAMBURGUESA */
+    #menuToggle {
+      display:none;
+      position: fixed;
+      top:15px;
+      left:15px;
+      background:#2563eb;
+      color:white;
+      border:none;
+      padding:10px 12px;
+      font-size:18px;
+      border-radius:6px;
+      cursor:pointer;
+      z-index:1000;
+    }
+
+    /* CONTENIDO */
+    main { flex:1; padding:30px; overflow-y:auto; transition: margin-left 0.3s ease; }
+
+    main h2 { margin-bottom:20px; color:#1f2937; }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    th, td { padding:12px 15px; text-align:center; font-size:14px; }
+    th { background:#2563eb; color:white; }
+    tr:nth-child(even){ background:#f9fafb; }
+    button { padding:6px 12px; border:none; border-radius:6px; background:#2563eb; color:white; cursor:pointer; font-size:13px; transition:background 0.2s;}
+    button:hover { background:#1e40af; }
+
+    .seccion { display:none; }
+    .seccion.active { display:block; }
+
+    .info-demo { background:white; padding:20px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      nav { position:fixed; left:-240px; top:0; height:100%; z-index:999; }
+      nav.show { transform: translateX(240px); }
+      #menuToggle { display:block; }
+      main { padding:20px; }
+    }
+  </style>
+</head>
+<body>
+
+<button id="menuToggle">&#9776;</button>
+
+<nav id="menuLateral">
+  <h2>ADMIN</h2>
+  <ul>
+    <li class="active" onclick="mostrarSeccion('pedidos')">Pedidos</li>
+    <li onclick="mostrarSeccion('catalogo')">Catálogo</li>
+    <li onclick="mostrarSeccion('proveedores')">Proveedores</li>
+    <li onclick="mostrarSeccion('usuarios')">Usuarios</li>
+    <li onclick="cerrarSesion()">Cerrar sesión</li>
+  </ul>
+</nav>
+
+<main>
+  <div id="pedidos" class="seccion active">
+    <h2>Pedidos</h2>
+    <table id="tablaPedidos">
+      <thead>
+        <tr>
+          <th>ID Auto</th>
+          <th>Usuario</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="catalogo" class="seccion">
+    <h2>Catálogo de Autos</h2>
+    <button onclick="mostrarFormulario()">Agregar Auto</button>
+    <table id="tablaCatalogo">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Año</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="formularioAuto" style="display:none; margin-top:20px;">
+      <h3 id="formTitle">Agregar Auto</h3>
+      <form id="autoForm">
+        <input type="hidden" id="autoId">
+        <label>Marca: <input type="text" id="marca" required></label><br>
+        <label>Modelo: <input type="text" id="modelo" required></label><br>
+        <label>Año: <input type="number" id="anio" required></label><br>
+        <label>Precio: <input type="number" id="precio" required></label><br>
+        <label>Imagen: <input type="text" id="imagen" placeholder="assets/autos/autoX.jpg"></label><br>
+        <label>Descripción: <textarea id="descripcion" required></textarea></label><br>
+        <button type="submit">Guardar</button>
+        <button type="button" onclick="ocultarFormulario()">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="proveedores" class="seccion">
+    <h2>Proveedores</h2>
+    <div class="info-demo">
+      <p><strong>Dennis (Chile):</strong> Proveedor principal de Nissan Condor. Responsable de preparación, certificación y envío CIF.</p>
+      <p><strong>Transportistas:</strong> Empresas terrestres para Bolivia (ej. desde puerto a Cochabamba).</p>
+      <p>(Simulado - en prototipo no editable)</p>
+    </div>
+  </div>
+
+  <div id="usuarios" class="seccion">
+    <h2>Usuarios</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>admin</td><td>ADMIN</td></tr>
+        <tr><td>cliente</td><td>USER</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script src="js/auth.js"></script>
+<script>
+  protegerVista("ADMIN");
+
+  function mostrarSeccion(seccionId){
+    document.querySelectorAll("main .seccion").forEach(sec=>{
+      sec.classList.toggle("active", sec.id===seccionId);
+    });
+    document.querySelectorAll("nav li").forEach(li=>{
+      li.classList.toggle("active", li.textContent.trim().toLowerCase()===seccionId);
+    });
+  }
+
+  function cerrarSesion(){
+    localStorage.removeItem("rol");
+    localStorage.removeItem("usuario");
+    window.location.href="login.html";
+  }
+
+  // Toggle menú lateral
+  const menuToggle = document.getElementById("menuToggle");
+  const menuLateral = document.getElementById("menuLateral");
+
+  menuToggle.addEventListener("click", ()=>{
+    menuLateral.classList.toggle("show");
+  });
+</script>
+<script src="js/admin.js"></script>
+</body>
+</html>

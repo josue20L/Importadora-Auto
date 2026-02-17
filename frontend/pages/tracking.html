@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Vehículo - AutoTracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../public/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos de respaldo para el mapa */
+        .map-placeholder {
+            height: 500px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 15px 15px;
+        }
+        .map-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .map-placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .map-placeholder p {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-car"></i>
+                    <span>AutoTracker</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active">Seguimiento</a>
+                    <a href="#" class="nav-link">Mis Pedidos</a>
+                    <a href="#" class="nav-link">Contacto</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Buscador de pedidos -->
+            <section class="search-section">
+                <div class="search-card">
+                    <h2>Seguimiento de Entrega</h2>
+                    <p>Ingresa tu número de pedido para ver el estado actual</p>
+                    <div class="search-form">
+                        <input type="text" id="orderNumber" placeholder="Ej: PED-2024-001" class="search-input">
+                        <button onclick="buscarPedido()" class="search-btn">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Información del pedido -->
+            <section id="orderInfo" class="order-info" style="display: none;">
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-title">
+                            <h3 id="vehicleName">Toyota Corolla 2024</h3>
+                            <span class="order-number" id="orderNumberDisplay">PED-2024-001</span>
+                        </div>
+                        <div class="order-status">
+                            <span class="status-badge" id="statusBadge">En Camino</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="detail-item">
+                            <i class="fas fa-car"></i>
+                            <div>
+                                <span class="detail-label">Vehículo</span>
+                                <span class="detail-value" id="vehicleDetails">Toyota Corolla LE, Blanco</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-user"></i>
+                            <div>
+                                <span class="detail-label">Driver</span>
+                                <span class="detail-value" id="driverName">Carlos Rodríguez</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="detail-label">Tiempo estimado</span>
+                                <span class="detail-value" id="estimatedTime">25-30 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mapa de seguimiento -->
+            <section id="mapSection" class="map-section" style="display: none;">
+                <div class="map-container">
+                    <div class="map-header">
+                        <h3>Ubicación en Tiempo Real</h3>
+                        <div class="map-controls">
+                            <button onclick="centrarMapa()" class="control-btn">
+                                <i class="fas fa-crosshairs"></i>
+                            </button>
+                            <button onclick="toggleFullscreen()" class="control-btn">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="map" class="map">
+                        <!-- Placeholder si el mapa no carga -->
+                        <div class="map-placeholder" id="mapPlaceholder" style="display: none;">
+                            <div>
+                                <i class="fas fa-map-marked-alt"></i>
+                                <h3>Mapa de Seguimiento</h3>
+                                <p>Cargando mapa interactivo...</p>
+                                <p><small>Si el mapa no carga, verifica tu conexión a internet</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Leyenda del mapa -->
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-marker delivery"></div>
+                            <span>Tu vehículo</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker destination"></div>
+                            <span>Destino</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-marker origin"></div>
+                            <span>Origen</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timeline de seguimiento -->
+            <section id="timelineSection" class="timeline-section" style="display: none;">
+                <div class="timeline-card">
+                    <h3>Historial de Seguimiento</h3>
+                    <div class="timeline" id="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>Pedido Confirmado</h4>
+                                <p>Tu pedido ha sido confirmado y está siendo preparado</p>
+                                <span class="timeline-time">10:30 AM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>Vehículo En Camino</h4>
+                                <p>Tu vehículo está siendo transportado hacia tu ubicación</p>
+                                <span class="timeline-time">11:15 AM</span>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item active">
+                            <div class="timeline-marker">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>En Tránsito</h4>
+                                <p>El vehículo está a 15 minutos de tu destino</p>
+                                <span class="timeline-time">Ahora</span>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item pending">
+                            <div class="timeline-marker">
+                                <i class="fas fa-flag-checkered"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>Entregado</h4>
+                                <p>Vehículo entregado exitosamente</p>
+                                <span class="timeline-time">Pendiente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Información de contacto -->
+            <section class="contact-section">
+                <div class="contact-card">
+                    <h3>¿Necesitas Ayuda?</h3>
+                    <div class="contact-options">
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <span class="contact-label">Llámanos</span>
+                                <span class="contact-value">+1 800-555-0123</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <span class="contact-label">Email</span>
+                                <span class="contact-value">soporte@autotracker.com</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-comments"></i>
+                            <div>
+                                <span class="contact-label">Chat</span>
+                                <span class="contact-value">Chat en vivo 24/7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-car"></i>
+                    <span>AutoTracker</span>
+                </div>
+                <div class="footer-text">
+                    <p>&copy; 2024 AutoTracker. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../public/js/tracking.js"></script>
+</body>
+</html>

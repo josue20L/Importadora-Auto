@@ -1,0 +1,273 @@
+/* RESET BÁSICO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FUENTE Y FONDO GENERAL */
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f4f6f9;
+  color: #333;
+  padding: 20px;
+}
+
+/* TÍTULOS */
+h1, h2 {
+  margin-bottom: 15px;
+  color: #1f2937;
+}
+
+/* CONTENEDOR GENERAL */
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* ================= LOGIN ================= */
+.login-box {
+  max-width: 380px;
+  margin: 80px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.login-box h2 {
+  text-align: center;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #1e40af;
+}
+
+/* ================= BOTONES ================= */
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #1e40af;
+}
+
+.btn-secondary {
+  background: #6b7280;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
+/* ================= PANEL ================= */
+.panel {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* ================= CATÁLOGO ================= */
+.catalogo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card-auto {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.card-auto:hover {
+  transform: translateY(-5px);
+}
+
+.card-auto img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.card-auto .info {
+  padding: 15px;
+}
+
+.card-auto h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.card-auto p {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.card-auto .precio {
+  font-weight: bold;
+  color: #16a34a;
+}
+
+/* ================= SEGUIMIENTO ================= */
+.seguimiento-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  margin-bottom: 15px;
+}
+
+.estado {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.estado span {
+  font-weight: bold;
+  color: #2563eb;
+}
+
+#map {
+  height: 420px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+
+/* ================= BADGES DE ESTADO ================= */
+.badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: white;
+}
+
+.badge.transito { background: #2563eb; }
+.badge.aduana { background: #f59e0b; }
+.badge.entregado { background: #16a34a; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+}
+.tracking-steps {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.step {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.step::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  right: -50%;
+  width: 100%;
+  height: 3px;
+  background: #ccc;
+  z-index: -1;
+}
+
+.step:last-child::after {
+  display: none;
+}
+
+.circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ccc;
+  margin: 0 auto 5px;
+}
+
+.step.completed .circle {
+  background: green;
+}
+
+.step.active .circle {
+  background: orange;
+}
+
+/* ================= MODAL ================= */
+.modal {
+  display: none; /* por defecto oculto */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); /* fondo semi-transparente */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-content h3 {
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.modal-content p {
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.modal-content span#cerrarModal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  color: #2563eb;
+  font-weight: bold;
+}

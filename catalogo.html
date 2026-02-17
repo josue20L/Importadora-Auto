@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Catálogo de Autos</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  protegerVista("USER");
+</script>
+
+<div class="container">
+
+  <div class="panel">
+    <h1>Catálogo de Autos</h1>
+
+    <div id="catalogo" class="catalogo"></div>
+
+    <br>
+    <button onclick="volver()">Volver</button>
+  </div>
+
+</div>
+
+
+
+<!-- Modal flotante -->
+<div id="modalDetalles" class="modal">
+  <div class="modal-content">
+    <span id="cerrarModal">&times;</span>
+    <h3 id="detalleTitulo"></h3>
+    <p id="detalleDescripcion"></p>
+    <p id="detallePrecio"></p>
+  </div>
+</div>
+
+<script src="js/datosFake.js"></script>
+<script src="js/flujo.js"></script>
+</body>
+</html>

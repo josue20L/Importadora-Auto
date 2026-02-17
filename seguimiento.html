@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento del Pedido</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- TU CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  protegerVista("USER");
+</script>
+
+<div class="container">
+
+  <div class="panel">
+    <h2>Seguimiento de mi pedido</h2>
+
+    <!-- Timeline de estados -->
+    <div class="tracking-container">
+      <div id="trackingSteps" class="tracking-steps"></div>
+    </div>
+
+    <!-- Caja de seguimiento -->
+    <div class="seguimiento-box">
+      <div class="estado">
+        Estado actual: <span id="estado"></span>
+      </div>
+      Ubicación estimada: <b id="ubicacion"></b>
+    </div>
+
+    <!-- Mapa -->
+    <div id="map" style="height:420px;"></div>
+
+    <!-- Botón de prueba para avanzar estado -->
+    <button onclick="avanzarEstado()">Avanzar estado (demo)</button>
+  </div>
+
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- JS seguimiento con OpenRouteService -->
+<script src="js/seguimiento.js"></script>
+</body>
+</html>
