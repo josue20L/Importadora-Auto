@@ -11,8 +11,8 @@ function login() {
     return;
   }
 
-  localStorage.setItem("rol", encontrado.rol);
-  localStorage.setItem("usuario", encontrado.user);
+  sessionStorage.setItem("rol", encontrado.rol);
+  sessionStorage.setItem("usuario", encontrado.user);
 
   if (encontrado.rol === "ADMIN") {
     window.location.href = "admin.html";
