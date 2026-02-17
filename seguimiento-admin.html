@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento del Pedido - Admin</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- TU CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  protegerVista("ADMIN");
+</script>
+
+<div class="container">
+
+  <div class="panel">
+    <h2>Seguimiento de Pedido - Panel Admin</h2>
+    <button onclick="volverAlAdmin()" style="margin-bottom: 15px;">← Volver al Admin</button>
+
+    <!-- Timeline de estados -->
+    <div class="tracking-container">
+      <div id="trackingSteps" class="tracking-steps"></div>
+    </div>
+
+    <!-- Caja de seguimiento -->
+    <div class="seguimiento-box">
+      <div class="estado">
+        Estado actual: <span id="estado"></span>
+      </div>
+      Ubicación estimada: <b id="ubicacion"></b>
+      <br><br>
+      <div style="background: #f0f0f0; padding: 10px; border-radius: 5px; font-size: 13px;">
+        <h4>Información del Estado Actual</h4>
+        <div id="infoEstado"><!-- Se llena desde JS --></div>
+      </div>
+      <br><br>
+      <h4>Documentos Requeridos para este Estado</h4>
+      <div id="documentosList" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+        <!-- Se llena dinámicamente desde JS -->
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <div id="map" style="height:420px; margin-top:20px;"></div>
+
+    <!-- CONTROLES ADMIN -->
+    <div style="margin-top: 20px; padding: 20px; background: #f0f0f0; border-radius: 10px;">
+      <h3>Controles Admin</h3>
+      
+      <h4>Cambiar Estado</h4>
+      <button onclick="cambiarEstadoA('Pedido Confirmado')">→ Pedido Confirmado</button>
+      <button onclick="cambiarEstadoA('En Puerto Iquique')">→ Puerto Iquique</button>
+      <button onclick="cambiarEstadoA('Control Colchane')">→ Control Colchane</button>
+      <button onclick="cambiarEstadoA('En Transporte')">→ En Transporte</button>
+      <button onclick="cambiarEstadoA('Control Pisiga')">→ Control Pisiga</button>
+      <button onclick="cambiarEstadoA('En Depósito Oruro')">→ Depósito Oruro</button>
+      <button onclick="cambiarEstadoA('En Transporte La Paz')">→ Transporte La Paz</button>
+      <button onclick="cambiarEstadoA('En Almacén Cochabamba')">→ Almacén Cochabamba</button>
+      <button onclick="cambiarEstadoA('Listo para Entrega')">→ Listo para Entrega</button>
+
+      <h4 style="margin-top: 20px;">Subir Documento</h4>
+      <select id="tipoDocumento">
+        <option value="Factura comercial">Factura comercial</option>
+        <option value="DUI">DUI - Declaración Única de Importación</option>
+        <option value="Lista de empaque">Lista de empaque</option>
+        <option value="Conocimiento de embarque">Conocimiento de embarque</option>
+        <option value="Póliza de seguro">Póliza de seguro internacional</option>
+      </select>
+      <input type="file" id="archivoDocumento" accept=".pdf,.jpg,.png">
+      <button onclick="subirDocumento()">Subir Documento</button>
+
+      <p style="font-size: 12px; color: #666; margin-top: 10px;">
+        * Simulado: Los documentos se guardan como texto en localStorage
+      </p>
+    </div>
+
+    <!-- Botón de prueba para avanzar estado (DEMO) -->
+    <button onclick="avanzarEstado()" style="margin-top: 20px;">Avanzar estado (demo)</button>
+  </div>
+
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- JS seguimiento admin -->
+<script src="js/seguimiento-admin.js"></script>
+</body>
+</html>

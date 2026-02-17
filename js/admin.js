@@ -18,7 +18,7 @@ function renderTablaPedidos() {
   tablaPedidos.innerHTML = ""; // limpiar tabla
 
   if (pedidos.length === 0) {
-    tablaPedidos.innerHTML = `<tr><td colspan="4">No hay pedidos</td></tr>`;
+    tablaPedidos.innerHTML = `<tr><td colspan="5">No hay pedidos</td></tr>`;
     return;
   }
 
@@ -28,6 +28,7 @@ function renderTablaPedidos() {
       <td>${pedido.autoId}</td>
       <td>${pedido.usuario || "Desconocido"}</td>
       <td>${pedido.estado}</td>
+      <td><button onclick="verSeguimientoAdmin(${index})">Ver Seguimiento</button></td>
       <td>
         <button onclick="avanzarEstado(${index})">Avanzar</button>
         <button onclick="resetearEstado(${index})">Reset</button>
@@ -52,6 +53,11 @@ function resetearEstado(index) {
   pedidos[index].estado = ESTADOS[0];
   localStorage.setItem("pedidos", JSON.stringify(pedidos));
   renderTablaPedidos();
+}
+
+// Función para ver seguimiento admin
+function verSeguimientoAdmin(index) {
+  window.location.href = `seguimiento-admin.html?pedidoIndex=${index}`;
 }
 
 // Cargar autos de datosFake.js (simulado, en prototipo)
@@ -90,14 +96,16 @@ function renderTablaCatalogo() {
   autos.forEach((auto, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${auto.id}</td>
+      <td>
+        <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}" style="width:50px; height:50px; border-radius:6px; object-fit:cover;">
+      </td>
       <td>${auto.marca}</td>
       <td>${auto.modelo}</td>
       <td>${auto.anio}</td>
-      <td>USD ${auto.precio}</td>
+      <td>$ ${auto.precio}</td>
       <td>
-        <button onclick="editarAuto(${index})">Editar</button>
-        <button onclick="eliminarAuto(${index})">Eliminar</button>
+        <button onclick="editarAuto(${index})" style="background:#3b82f6; margin-right:5px;">✎ Editar</button>
+        <button onclick="eliminarAuto(${index})" style="background:#ef4444;">🗑 Eliminar</button>
       </td>
     `;
     tablaCatalogo.appendChild(tr);
@@ -106,9 +114,11 @@ function renderTablaCatalogo() {
 
 function mostrarFormulario() {
   document.getElementById("formularioAuto").style.display = "block";
-  document.getElementById("formTitle").textContent = "Agregar Auto";
+  document.getElementById("formTitle").textContent = "Agregar Nuevo Auto";
   autoForm.reset();
   document.getElementById("autoId").value = "";
+  document.getElementById("fotoPreview").style.display = "none";
+  window.scrollTo(0, document.querySelector("#catalogo").offsetTop);
 }
 
 function ocultarFormulario() {
@@ -122,10 +132,16 @@ function editarAuto(index) {
   document.getElementById("modelo").value = auto.modelo;
   document.getElementById("anio").value = auto.anio;
   document.getElementById("precio").value = auto.precio;
-  document.getElementById("imagen").value = auto.imagen;
   document.getElementById("descripcion").value = auto.descripcion;
   document.getElementById("formTitle").textContent = "Editar Auto";
+  
+  // Mostrar preview de foto actual
+  document.getElementById("previewImg").src = auto.imagen;
+  document.getElementById("fotoPreview").style.display = "block";
+  document.getElementById("fotoDrive").value = "";
+  
   document.getElementById("formularioAuto").style.display = "block";
+  window.scrollTo(0, document.querySelector("#catalogo").offsetTop);
 }
 
 function eliminarAuto(index) {
@@ -136,28 +152,57 @@ function eliminarAuto(index) {
   }
 }
 
+// Preview de foto en tiempo real
+document.getElementById("fotoDrive").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (file && file.size <= 5 * 1024 * 1024) { // 5MB máx
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      document.getElementById("previewImg").src = event.target.result;
+      document.getElementById("fotoPreview").style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  } else if (file) {
+    alert("La foto debe ser menor a 5MB");
+    e.target.value = "";
+  }
+});
+
 autoForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const id = document.getElementById("autoId").value;
+  const fotoInput = document.getElementById("fotoDrive");
+  const previewImg = document.getElementById("previewImg").src;
+  
+  // Si hay foto nueva, usar esa; si no, mantener la anterior
+  let fotoFinal = previewImg;
+  
   const nuevoAuto = {
     id: autos.length + 1,
     marca: document.getElementById("marca").value,
     modelo: document.getElementById("modelo").value,
     anio: parseInt(document.getElementById("anio").value),
     precio: parseInt(document.getElementById("precio").value),
-    imagen: document.getElementById("imagen").value,
+    imagen: fotoFinal,
     descripcion: document.getElementById("descripcion").value
   };
 
   if (id === "") {
+    // Nuevo auto - requiere foto
+    if (!fotoInput.files[0]) {
+      alert("Debes seleccionar una foto para el auto");
+      return;
+    }
     autos.push(nuevoAuto);
   } else {
+    // Editar auto
     autos[parseInt(id)] = { ...autos[parseInt(id)], ...nuevoAuto };
   }
 
   localStorage.setItem("autos", JSON.stringify(autos));
   renderTablaCatalogo();
   ocultarFormulario();
+  alert("✓ Auto guardado correctamente");
 });
 
 // Cargar tablas al inicio

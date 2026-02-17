@@ -1,12 +1,23 @@
 // ===============================
-// Cargar pedido (último de array)
+// Cargar pedido por parámetro o último
 // ===============================
+const urlParams = new URLSearchParams(window.location.search);
+const pedidoIndex = urlParams.get('pedidoIndex');
 let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-const pedidoIndex = pedidos.length - 1;
-let pedido = pedidos[pedidoIndex];
+let pedido;
+let pedidoActualIndex;
+
+if (pedidoIndex !== null) {
+  pedidoActualIndex = parseInt(pedidoIndex);
+  pedido = pedidos[pedidoActualIndex];
+} else {
+  pedidoActualIndex = pedidos.length - 1;
+  pedido = pedidos[pedidoActualIndex];
+}
+
 if (!pedido) {
   alert("No hay pedido activo");
-  window.location.href = "catalogo.html";
+  window.location.href = "admin.html";
 }
 
 // ===============================
@@ -59,6 +70,18 @@ const DOCUMENTOS_POR_ESTADO = {
   "En Transporte La Paz": ["Guía terrestre Bolivia", "Control de carga"],
   "En Almacén Cochabamba": ["Factura de entrega", "Certificado técnico", "Garantía"],
   "Listo para Entrega": ["Documentación completa", "Certificación técnica", "Garantía mecánica"]
+};
+
+const INFORMACION_ESTADOS = {
+  "Pedido Confirmado": "El cliente ha solicitado el auto. Se inicia el trámite de documentación y se envía solicitud al proveedor Dennis.",
+  "En Puerto Iquique": "La mercancía ha llegado al puerto de Iquique (Chile). Se inicia el proceso de verificación y documentación aduanal.",
+  "Control Colchane": "Punto de aduana en frontera Chile. Se realiza verificación física, documental y control de carga. Distancia: ~200km desde Iquique.",
+  "En Transporte": "El vehículo está en transporte carretero hacia Bolivia. Asegurado contra daños y en tránsito bajo protocolo de cuidado.",
+  "Control Pisiga": "Punto de aduana en frontera Bolivia (Pisiga). Ingreso oficial a territorio boliviano. Se realiza inspección final.",
+  "En Depósito Oruro": "Llegada a centro de distribución en Oruro. Se verifica integridad de carga y se prepara para siguiente etapa de transporte.",
+  "En Transporte La Paz": "En tránsito desde Oruro hacia La Paz. Ruta: Oruro → Viacha → Patacamaya → La Paz.",
+  "En Almacén Cochabamba": "Llegada al almacén final en Cochabamba (Sacaba). Se prepara para entrega al cliente.",
+  "Listo para Entrega": "Vehículo completamente procesado. Documentación completa, certificación técnica y garantía listos. Disponible para entrega al cliente."
 };
 
 // ===============================
@@ -160,6 +183,74 @@ ESTADOS.forEach((estado, index) => {
 });
 
 // ===============================
+// Función demo para avanzar estado
+// ===============================
+function avanzarEstado() {
+  let idx = ESTADOS.indexOf(pedido.estado);
+  if (idx < ESTADOS.length - 1) {
+    pedidos[pedidoActualIndex].estado = ESTADOS[idx + 1];
+    localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    location.reload();
+  }
+}
+
+// ===============================
+// Función para cambiar estado (ADMIN)
+// ===============================
+function cambiarEstadoA(nuevoEstado) {
+  if (ESTADOS.includes(nuevoEstado)) {
+    pedidos[pedidoActualIndex].estado = nuevoEstado;
+    localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    alert("Estado actualizado a: " + nuevoEstado);
+    location.reload();
+  }
+}
+
+// ===============================
+// Función para subir documento (ADMIN)
+// ===============================
+function subirDocumento() {
+  const tipoDocumento = document.getElementById("tipoDocumento").value;
+  const archivoDocumento = document.getElementById("archivoDocumento");
+
+  if (!archivoDocumento.files.length) {
+    alert("Selecciona un archivo");
+    return;
+  }
+
+  const archivo = archivoDocumento.files[0];
+  
+  // Simular lectura de archivo (en prototipo)
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Guardar documento en pedido
+    if (!pedidos[pedidoActualIndex].documentos) {
+      pedidos[pedidoActualIndex].documentos = {};
+    }
+    pedidos[pedidoActualIndex].documentos[tipoDocumento] = {
+      nombre: archivo.name,
+      fecha: new Date().toLocaleString(),
+      base64: e.target.result // En prototipo, guardamos base64
+    };
+
+    localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    alert(`Documento "${tipoDocumento}" subido correctamente`);
+    document.getElementById("archivoDocumento").value = "";
+    location.reload();
+  };
+  reader.readAsDataURL(archivo);
+}
+
+// ===============================
+// Mostrar información del estado
+// ===============================
+function mostrarInfoEstado() {
+  const infoDiv = document.getElementById("infoEstado");
+  const info = INFORMACION_ESTADOS[pedido.estado] || "Sin información disponible";
+  infoDiv.innerHTML = `<p>${info}</p>`;
+}
+
+// ===============================
 // Mostrar documentos según estado
 // ===============================
 function mostrarDocumentos() {
@@ -172,24 +263,13 @@ function mostrarDocumentos() {
     return;
   }
 
-  docsRequeridos.forEach((doc) => {
+  docsRequeridos.forEach((doc, index) => {
     const li = document.createElement("div");
     li.style.padding = "5px";
-    li.innerHTML = `✓ ${doc}`;
+    li.innerHTML = `✓ ${doc} <button onclick="alert('${doc} - Subido/Verificado')" style="margin-left: 10px; padding: 3px 8px; font-size: 12px;">Ver</button>`;
     docsList.appendChild(li);
   });
 }
 
+mostrarInfoEstado();
 mostrarDocumentos();
-
-// ===============================
-// Función demo para avanzar estado
-// ===============================
-function avanzarEstado() {
-  let idx = ESTADOS.indexOf(pedido.estado);
-  if (idx < ESTADOS.length - 1) {
-    pedidos[pedidoIndex].estado = ESTADOS[idx + 1];
-    localStorage.setItem("pedidos", JSON.stringify(pedidos));
-    location.reload();
-  }
-}
