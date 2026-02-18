@@ -44,6 +44,25 @@ function avanzarEstado(index) {
   if (idx < ESTADOS.length - 1) {
     pedidos[index].estado = ESTADOS[idx + 1];
     localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    // Crear notificación para el usuario asociado al pedido
+    try {
+      const usuarioDestino = pedidos[index].usuario || 'cliente';
+      const nuevoEstado = pedidos[index].estado;
+      const mensaje = `El estado de tu pedido (índice ${index}) cambió a: ${nuevoEstado}`;
+      const notificacion = {
+        id: Date.now(),
+        usuario: usuarioDestino,
+        pedidoIndex: index,
+        message: mensaje,
+        estado: nuevoEstado,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+      const lista = JSON.parse(localStorage.getItem('notificaciones')) || [];
+      lista.push(notificacion);
+      localStorage.setItem('notificaciones', JSON.stringify(lista));
+    } catch(e) { console.warn('No se pudo generar notificación:', e); }
+
     renderTablaPedidos();
   }
 }
@@ -168,42 +187,78 @@ document.getElementById("fotoDrive").addEventListener("change", (e) => {
   }
 });
 
-autoForm.addEventListener("submit", (e) => {
+autoForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = document.getElementById("autoId").value;
   const fotoInput = document.getElementById("fotoDrive");
-  const previewImg = document.getElementById("previewImg").src;
-  
-  // Si hay foto nueva, usar esa; si no, mantener la anterior
-  let fotoFinal = previewImg;
-  
-  const nuevoAuto = {
-    id: autos.length + 1,
-    marca: document.getElementById("marca").value,
-    modelo: document.getElementById("modelo").value,
-    anio: parseInt(document.getElementById("anio").value),
-    precio: parseInt(document.getElementById("precio").value),
-    imagen: fotoFinal,
-    descripcion: document.getElementById("descripcion").value
-  };
 
-  if (id === "") {
-    // Nuevo auto - requiere foto
-    if (!fotoInput.files[0]) {
+  try {
+    let fotoFinal;
+
+    // Si hay una nueva foto, subirla al servidor
+    if (fotoInput.files[0]) {
+      const formData = new FormData();
+      formData.append('foto', fotoInput.files[0]);
+
+      const response = await fetch('http://localhost:3000/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al subir la imagen');
+      }
+
+      const result = await response.json();
+      fotoFinal = result.imagePath;
+    } else if (id !== "") {
+      // Editar sin cambiar foto - mantener la anterior
+      fotoFinal = autos[parseInt(id)].imagen;
+    } else {
+      // Nuevo auto sin foto
       alert("Debes seleccionar una foto para el auto");
       return;
     }
-    autos.push(nuevoAuto);
-  } else {
-    // Editar auto
-    autos[parseInt(id)] = { ...autos[parseInt(id)], ...nuevoAuto };
-  }
 
-  localStorage.setItem("autos", JSON.stringify(autos));
-  renderTablaCatalogo();
-  ocultarFormulario();
-  alert("✓ Auto guardado correctamente");
-});
+    const nuevoAuto = {
+      id: autos.length + 1,
+      marca: document.getElementById("marca").value,
+      modelo: document.getElementById("modelo").value,
+      anio: parseInt(document.getElementById("anio").value),
+      precio: parseInt(document.getElementById("precio").value),
+      imagen: fotoFinal,
+      descripcion: document.getElementById("descripcion").value
+    };
+
+    if (id === "") {
+      // Nuevo auto
+      autos.push(nuevoAuto);
+    } else {
+      // Editar auto
+      autos[parseInt(id)] = { ...autos[parseInt(id)], ...nuevoAuto };
+    }
+
+    // Guardar en localStorage (por ahora mantenemos esto para compatibilidad)
+    localStorage.setItem("autos", JSON.stringify(autos));
+
+    // También enviar al servidor para persistencia
+    await fetch('http://localhost:3000/api/autos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(autos)
+    });
+
+    renderTablaCatalogo();
+    ocultarFormulario();
+    alert("✓ Auto guardado correctamente");
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert("Error al guardar el auto. Asegúrate de que el servidor esté corriendo.");
+  }
+}); // Agregado la llave de cierre faltante
 
 // Cargar tablas al inicio
 renderTablaPedidos();

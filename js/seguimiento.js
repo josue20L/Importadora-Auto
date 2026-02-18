@@ -1,8 +1,10 @@
 // ===============================
-// Cargar pedido (último de array)
+// Cargar pedido (por sessionStorage 'pedidoIndex' o último del array)
 // ===============================
 let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-const pedidoIndex = pedidos.length - 1;
+const pedidoIndex = (sessionStorage.getItem('pedidoIndex') !== null)
+  ? parseInt(sessionStorage.getItem('pedidoIndex'))
+  : (pedidos.length - 1);
 let pedido = pedidos[pedidoIndex];
 if (!pedido) {
   alert("No hay pedido activo");
@@ -120,7 +122,7 @@ Promise.all(rutasOSRM)
     // Convertir [lng, lat] a [lat, lng] para Leaflet
     const rutaLeaflet = lineasRuta.map(coord => [coord[1], coord[0]]);
     const polyline = L.polyline(rutaLeaflet, { 
-      color: "#2563eb", 
+      color: "#0077b6", 
       weight: 4,
       opacity: 0.8
     }).addTo(map);
@@ -145,6 +147,21 @@ Promise.all(rutasOSRM)
 });
 
 // ===============================
+// Iconos para cada estado
+// ===============================
+const ICONOS_ESTADOS = {
+  "Pedido Confirmado": "📋",
+  "En Puerto Iquique": "⚓",
+  "Control Colchane": "🛃",
+  "En Transporte": "🚚",
+  "Control Pisiga": "🛃",
+  "En Depósito Oruro": "🏭",
+  "En Transporte La Paz": "🚐",
+  "En Almacén Cochabamba": "📦",
+  "Listo para Entrega": "✅"
+};
+
+// ===============================
 // Timeline de estados
 // ===============================
 const trackingSteps = document.getElementById("trackingSteps");
@@ -155,7 +172,9 @@ ESTADOS.forEach((estado, index) => {
   step.classList.add("step");
   if (index < estadoActualIndex) step.classList.add("completed");
   if (index === estadoActualIndex) step.classList.add("active");
-  step.innerHTML = `<div class="circle"></div><span>${estado}</span>`;
+  
+  const icono = ICONOS_ESTADOS[estado] || "📍";
+  step.innerHTML = `<div class="circle">${icono}</div><span>${estado}</span>`;
   trackingSteps.appendChild(step);
 });
 
@@ -192,4 +211,15 @@ function avanzarEstado() {
     localStorage.setItem("pedidos", JSON.stringify(pedidos));
     location.reload();
   }
+}
+
+// Volver a la pantalla anterior o a usuario.html si no hay referrer
+function volverAUsuario(){
+  try{
+    if(document.referrer && document.referrer.includes('usuario.html')){
+      history.back();
+    } else {
+      window.location.href = 'usuario.html';
+    }
+  }catch(e){ window.location.href = 'usuario.html'; }
 }

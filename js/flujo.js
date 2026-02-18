@@ -1,54 +1,78 @@
 const contenedor = document.getElementById("catalogo");
 
 if (contenedor) {
-  // Cargar autos de localStorage o datosFake
-  let autos = JSON.parse(localStorage.getItem("autos")) || [
-    {
-      id: 1,
-      marca: "Toyota",
-      modelo: "Corolla",
-      anio: 2020,
-      precio: 12000,
-      imagen: "assets/autos/auto1.jpg",
-      descripcion: "Sedán confiable, económico y cómodo para la ciudad."
-    },
-    {
-      id: 2,
-      marca: "BMW",
-      modelo: "X5",
-      anio: 2019,
-      precio: 28000,
-      imagen: "assets/autos/auto2.jpg",
-      descripcion: "SUV de lujo, potente y con tecnología avanzada."
-    },
-    {
-      id: 3,
-      marca: "Nissan",
-      modelo: "Sentra",
-      anio: 2021,
-      precio: 13500,
-      imagen: "assets/autos/auto3.jpg",
-      descripcion: "Compacto moderno, seguro y eficiente en combustible."
+  // Función para cargar autos
+  async function cargarAutos() {
+    let autos = [];
+
+    try {
+      // Intentar cargar desde el servidor primero
+      const response = await fetch('http://localhost:3000/api/autos');
+      if (response.ok) {
+        autos = await response.json();
+        console.log('Autos cargados desde servidor:', autos);
+      } else {
+        throw new Error('Servidor no disponible');
+      }
+    } catch (error) {
+      console.log('Cargando autos desde localStorage:', error.message);
+      // Fallback a localStorage
+      autos = JSON.parse(localStorage.getItem("autos")) || [
+        {
+          id: 1,
+          marca: "Toyota",
+          modelo: "Corolla",
+          anio: 2020,
+          precio: 12000,
+          imagen: "assets/autos/auto1.jpg",
+          descripcion: "Sedán confiable, económico y cómodo para la ciudad."
+        },
+        {
+          id: 2,
+          marca: "BMW",
+          modelo: "X5",
+          anio: 2019,
+          precio: 28000,
+          imagen: "assets/autos/auto2.jpg",
+          descripcion: "SUV de lujo, potente y con tecnología avanzada."
+        },
+        {
+          id: 3,
+          marca: "Nissan",
+          modelo: "Sentra",
+          anio: 2021,
+          precio: 13500,
+          imagen: "assets/autos/auto3.jpg",
+          descripcion: "Compacto moderno, seguro y eficiente en combustible."
+        }
+      ];
     }
-  ];
 
-  autos.forEach(auto => {
-    const card = document.createElement("div");
-    card.className = "card-auto";
+    // Limpiar contenedor
+    contenedor.innerHTML = '';
 
-    card.innerHTML = `
-      <img src="${auto.imagen}">
-      <div class="info">
-        <h3>${auto.marca} ${auto.modelo}</h3>
-        <p>Año: ${auto.anio}</p>
-        <p class="precio">USD ${auto.precio}</p>
-        <button onclick="verDetalles(${auto.id})">Ver detalles</button>
-        <button onclick="solicitar(${auto.id})">Solicitar importación</button>
-      </div>
-    `;
+    // Renderizar autos
+    autos.forEach(auto => {
+      const card = document.createElement("div");
+      card.className = "card-auto";
 
-    contenedor.appendChild(card);
-  });
+      card.innerHTML = `
+        <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}" onerror="this.src='assets/autos/default.jpg'">
+        <div class="info">
+          <h3>${auto.marca} ${auto.modelo}</h3>
+          <p>Año: ${auto.anio}</p>
+          <p class="precio">USD ${auto.precio}</p>
+          <button onclick="verDetalles(${auto.id})">Ver detalles</button>
+          <button onclick="solicitar(${auto.id})">Solicitar importación</button>
+        </div>
+      `;
+
+      contenedor.appendChild(card);
+    });
+  }
+
+  // Cargar autos al inicio
+  cargarAutos();
 }
 
 // Función para abrir modal con detalles
@@ -89,15 +113,27 @@ function cerrarModal() {
 }
 
 function solicitar(idAuto) {
+  const usuario = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('usuario')) || localStorage.getItem("usuario") || 'cliente';
   const pedido = {
     autoId: idAuto,
     estado: "COTIZACIÓN",
     ubicacion: "Puerto de Chile",
-    usuario: localStorage.getItem("usuario") || "cliente"
+    usuario: usuario
   };
   let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
   pedidos.push(pedido);
   localStorage.setItem("pedidos", JSON.stringify(pedidos));
+  // Guardar el índice del pedido en sessionStorage del top window y navegar toda la ventana
+  try{
+    const nuevoIndex = pedidos.length - 1;
+    if(window.top && window.top.sessionStorage){
+      window.top.sessionStorage.setItem('pedidoIndex', String(nuevoIndex));
+      window.top.location.href = "seguimiento.html";
+      return;
+    }
+  }catch(e){ /* fall back */ }
+  // Fallback: navegar en el mismo contexto
+  sessionStorage.setItem('pedidoIndex', String(pedidos.length - 1));
   window.location.href = "seguimiento.html";
 }
 

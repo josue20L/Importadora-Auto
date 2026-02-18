@@ -12,6 +12,265 @@
 
   <!-- TU CSS -->
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Centrar título en la página de seguimiento */
+    .panel > h2 { text-align: center; margin-top: 6px; color: #1f2937; font-size: 28px; font-weight: 700; margin-bottom: 30px; }
+    
+    /* Contenedor principal mejorado */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Panel principal con diseño moderno */
+    .panel {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      padding: 0;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+      border: 1px solid rgba(42, 97, 153, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2a6199 0%, #1e4a73 100%);
+    }
+    
+    /* Encabezado del panel */
+    .panel-header {
+      background: linear-gradient(135deg, #2a6199 0%, #1e4a73 100%);
+      padding: 25px 40px;
+      border-radius: 20px 20px 0 0;
+      position: relative;
+    }
+    
+    .panel-header h2 {
+      text-align: center;
+      margin: 0;
+      color: white;
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Contenido del panel */
+    .panel-content {
+      padding: 40px;
+    }
+    
+    /* Botón volver mejorado */
+    .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #2a6199 0%, #1e4a73 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(42, 97, 153, 0.3);
+      margin-bottom: 30px;
+    }
+    
+    .btn-volver:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(42, 97, 153, 0.4);
+    }
+    
+    /* Contenedor de tracking mejorado */
+    .tracking-container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      border: 2px solid #87CEEB;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tracking-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #87CEEB 0%, #B0E0E6 100%);
+    }
+    
+    /* Caja de seguimiento mejorada */
+    .seguimiento-box {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      border: 1px solid rgba(42, 97, 153, 0.15);
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .seguimiento-box::before {
+      content: "📍";
+      position: absolute;
+      top: -15px;
+      left: 30px;
+      background: #2a6199;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 4px 8px rgba(42, 97, 153, 0.3);
+    }
+    
+    .estado {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #374151;
+      font-weight: 500;
+    }
+    
+    .estado span {
+      font-weight: 700;
+      color: #2a6199;
+      background: rgba(42, 97, 153, 0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    
+    #ubicacion {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    /* Sección de documentos mejorada */
+    .documentos-section {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      border: 1px solid rgba(42, 97, 153, 0.1);
+      margin-bottom: 25px;
+    }
+    
+    .documentos-section h4 {
+      color: #1f2937;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .documentos-section h4::before {
+      content: "📄";
+      font-size: 20px;
+    }
+    
+    #documentosList {
+      border: none;
+      padding: 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid rgba(42, 97, 153, 0.1);
+    }
+    
+    #documentosList div {
+      padding: 10px 15px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid #2a6199;
+      font-size: 14px;
+      color: #374151;
+      transition: all 0.3s ease;
+    }
+    
+    #documentosList div:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Mapa mejorado */
+    #map {
+      height: 450px;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      border: 2px solid rgba(42, 97, 153, 0.1);
+      overflow: hidden;
+      margin-top: 25px;
+    }
+    
+    /* Botón de demo mejorado */
+    .btn-demo {
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #2a6199 0%, #1e4a73 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 16px rgba(42, 97, 153, 0.3);
+      margin-top: 25px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-demo:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(42, 97, 153, 0.4);
+    }
+    
+    .btn-demo::before {
+      content: "⚡";
+      font-size: 18px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .panel {
+        padding: 25px;
+        border-radius: 16px;
+      }
+      
+      .tracking-container,
+      .seguimiento-box,
+      .documentos-section {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      
+      #map {
+        height: 350px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -23,33 +282,39 @@
 <div class="container">
 
   <div class="panel">
-    <h2>Seguimiento de mi pedido</h2>
-
-    <!-- Timeline de estados -->
-    <div class="tracking-container">
-      <div id="trackingSteps" class="tracking-steps"></div>
+    <div class="panel-header">
+      <h2>Seguimiento de mi pedido</h2>
     </div>
+    <div class="panel-content">
+      <button class="btn-volver" onclick="volverAUsuario()">← Volver</button>
 
-    <!-- Caja de seguimiento -->
-    <div class="seguimiento-box">
-      <div class="estado">
-        Estado actual: <span id="estado"></span>
+      <!-- Timeline de estados -->
+      <div class="tracking-container">
+        <div id="trackingSteps" class="tracking-steps"></div>
       </div>
-      Ubicación estimada: <b id="ubicacion"></b>
+
+      <!-- Caja de seguimiento -->
+      <div class="seguimiento-box">
+        <div class="estado">
+          Estado actual: <span id="estado"></span>
+        </div>
+        Ubicación estimada: <b id="ubicacion"></b>
+      </div>
+
+      <!-- Documentos -->
+      <div class="documentos-section">
+        <h4>Documentos para este Estado</h4>
+        <div id="documentosList">
+          <!-- Se llena dinámicamente desde JS -->
+        </div>
+      </div>
+
+      <!-- Mapa -->
+      <div id="map"></div>
+
+      <!-- Botón de prueba para avanzar estado -->
+      <button class="btn-demo" onclick="avanzarEstado()">Avanzar estado (demo)</button>
     </div>
-
-    <!-- Documentos -->
-    <br>
-    <h4>Documentos para este Estado</h4>
-    <div id="documentosList" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
-      <!-- Se llena dinámicamente desde JS -->
-    </div>
-
-    <!-- Mapa -->
-    <div id="map" style="height:420px;"></div>
-
-    <!-- Botón de prueba para avanzar estado -->
-    <button onclick="avanzarEstado()">Avanzar estado (demo)</button>
   </div>
 
 </div>

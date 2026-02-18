@@ -143,7 +143,7 @@ Promise.all(rutasOSRM)
     // Convertir [lng, lat] a [lat, lng] para Leaflet
     const rutaLeaflet = lineasRuta.map(coord => [coord[1], coord[0]]);
     const polyline = L.polyline(rutaLeaflet, { 
-      color: "#2563eb", 
+      color: "#0077b6", 
       weight: 4,
       opacity: 0.8
     }).addTo(map);
@@ -201,6 +201,24 @@ function cambiarEstadoA(nuevoEstado) {
   if (ESTADOS.includes(nuevoEstado)) {
     pedidos[pedidoActualIndex].estado = nuevoEstado;
     localStorage.setItem("pedidos", JSON.stringify(pedidos));
+    // Crear notificación para el usuario del pedido
+    try {
+      const usuarioDestino = pedidos[pedidoActualIndex].usuario || 'cliente';
+      const mensaje = `Tu pedido (índice ${pedidoActualIndex}) cambió a: ${nuevoEstado}`;
+      const notificacion = {
+        id: Date.now(),
+        usuario: usuarioDestino,
+        pedidoIndex: pedidoActualIndex,
+        message: mensaje,
+        estado: nuevoEstado,
+        timestamp: new Date().toISOString(),
+        read: false
+      };
+      const lista = JSON.parse(localStorage.getItem('notificaciones')) || [];
+      lista.push(notificacion);
+      localStorage.setItem('notificaciones', JSON.stringify(lista));
+    } catch(e){ console.warn('No se pudo generar notificación:', e); }
+
     alert("Estado actualizado a: " + nuevoEstado);
     location.reload();
   }

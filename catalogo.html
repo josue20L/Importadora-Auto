@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <title>Catálogo de Autos</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Cuando se muestre dentro del iframe, mantener fondo transparente y eliminar márgenes extra */
+    body { background: transparent; padding: 0; }
+    .container { max-width: 100%; margin: 0; padding: 0; }
+    .panel { background: transparent; padding: 0; box-shadow: none; }
+    h1 { display: none; }
+    button[onclick="volver()"] { display: none; }
+  </style>
 </head>
 <body>
 
@@ -15,12 +23,7 @@
 <div class="container">
 
   <div class="panel">
-    <h1>Catálogo de Autos</h1>
-
     <div id="catalogo" class="catalogo"></div>
-
-    <br>
-    <button onclick="volver()">Volver</button>
   </div>
 
 </div>

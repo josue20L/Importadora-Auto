@@ -17,6 +17,6 @@ function login() {
   if (encontrado.rol === "ADMIN") {
     window.location.href = "admin.html";
   } else {
-    window.location.href = "catalogo.html";
+    window.location.href = "usuario.html";
   }
 }
