@@ -57,7 +57,7 @@ if (contenedor) {
       card.className = "card-auto";
 
       card.innerHTML = `
-        <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}" onerror="this.src='assets/autos/default.jpg'">
+        <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"450\"><rect fill=\"%23f3f4f6\" width=\"100%25\" height=\"100%25\"/><text x=\"50%25\" y=\"50%25\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"%239ca3af\" font-family=\"sans-serif\" font-size=\"36\">No%20Image</text></svg>'">
         <div class="info">
           <h3>${auto.marca} ${auto.modelo}</h3>
           <p>Año: ${auto.anio}</p>

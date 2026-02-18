@@ -28,20 +28,20 @@
   },
   {
     "id": 4,
-    "marca": "Nissan",
-    "modelo": "Condor MK",
-    "anio": 2020,
-    "precio": 1400,
-    "imagen": "assets/autos/auto_1771378927394.jpg",
-    "descripcion": "comodo y pequeño"
+    "marca": "Nissan Condor",
+    "modelo": "Nose",
+    "anio": 2025,
+    "precio": 200000,
+    "imagen": "assets/autos/auto_1771384005416.jpeg",
+    "descripcion": "nose"
   },
   {
     "id": 5,
-    "marca": "no se",
-    "modelo": "algo",
+    "marca": "prueba",
+    "modelo": "prueba",
     "anio": 2020,
-    "precio": 1000,
-    "imagen": "assets/autos/auto_1771379439700.png",
-    "descripcion": "bonito"
+    "precio": 1300,
+    "imagen": "assets/autos/auto_1771384071414.jpg",
+    "descripcion": "prueba\n"
   }
 ]

@@ -16,7 +16,7 @@ app.use(express.json());
 
 // Headers de seguridad y CSP
 app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:3000 ws://localhost:3000; frame-src 'self';");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://unpkg.com; script-src 'self' 'unsafe-inline' https://unpkg.com; connect-src 'self' http://localhost:3000 ws://localhost:3000 https://router.project-osrm.org https://unpkg.com; frame-src 'self';");
   res.setHeader('X-Content-Type-Options', 'nosniff');
   // Removido X-Frame-Options para permitir desarrollo
   next();

@@ -168,6 +168,21 @@ Promise.all(rutasOSRM)
 });
 
 // ===============================
+// Iconos para cada estado
+// ===============================
+const ICONOS_ESTADOS = {
+  "Pedido Confirmado": "📋",
+  "En Puerto Iquique": "⚓",
+  "Control Colchane": "🛃",
+  "En Transporte": "🚚",
+  "Control Pisiga": "🛃",
+  "En Depósito Oruro": "🏭",
+  "En Transporte La Paz": "🚐",
+  "En Almacén Cochabamba": "📦",
+  "Listo para Entrega": "✅"
+};
+
+// ===============================
 // Timeline de estados
 // ===============================
 const trackingSteps = document.getElementById("trackingSteps");
@@ -178,7 +193,9 @@ ESTADOS.forEach((estado, index) => {
   step.classList.add("step");
   if (index < estadoActualIndex) step.classList.add("completed");
   if (index === estadoActualIndex) step.classList.add("active");
-  step.innerHTML = `<div class="circle"></div><span>${estado}</span>`;
+  
+  const icono = ICONOS_ESTADOS[estado] || "📍";
+  step.innerHTML = `<div class="circle">${icono}</div><span>${estado}</span>`;
   trackingSteps.appendChild(step);
 });
 
