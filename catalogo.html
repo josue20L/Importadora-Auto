@@ -1,46 +1,91 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
+
   <meta charset="UTF-8">
+
   <title>Catálogo de Autos</title>
+
   <link rel="stylesheet" href="css/styles.css">
+
   <style>
+
     /* Cuando se muestre dentro del iframe, mantener fondo transparente y eliminar márgenes extra */
+
     body { background: transparent; padding: 0; }
+
     .container { max-width: 100%; margin: 0; padding: 0; }
+
     .panel { background: transparent; padding: 0; box-shadow: none; }
+
     h1 { display: none; }
+
     button[onclick="volver()"] { display: none; }
+
   </style>
+
 </head>
+
 <body>
 
+
+
 <script src="js/auth.js"></script>
+
 <script>
+
   protegerVista("USER");
+
 </script>
+
+
 
 <div class="container">
 
+
+
   <div class="panel">
+
     <div id="catalogo" class="catalogo"></div>
+
   </div>
 
+
+
 </div>
+
+
+
+
 
 
 
 <!-- Modal flotante -->
+
 <div id="modalDetalles" class="modal">
+
   <div class="modal-content">
+
     <span id="cerrarModal">&times;</span>
+
     <h3 id="detalleTitulo"></h3>
+
     <p id="detalleDescripcion"></p>
+
     <p id="detallePrecio"></p>
+
   </div>
+
 </div>
 
+
+
 <script src="js/datosFake.js"></script>
+
 <script src="js/flujo.js"></script>
+
 </body>
+
 </html>
